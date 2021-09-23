@@ -7,7 +7,7 @@ const OUT_LED_GPIO_PIN = 27;
 const GPIO_INPUT_DIRECTION = 'in'
 const GPIO_EDGE_BOTH = 'both'
 const GPIO_EDGE_RISING = 'rising'
-const GPIO_OPTS = { activeLow: true }
+const GPIO_OPTS = { activeLow: true };
 
 const PoweredUP = require("node-poweredup");
 var Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
@@ -37,7 +37,7 @@ poweredUP.on("discover", async (hub) => { // Wait to discover hubs
         }
 
         outLed.writeSync(outLed.readSync() ^ 1);
-    }
+    })
 
     const motorDevice = await hub.waitForDeviceByType(PoweredUP.Consts.DeviceType.DUPLO_TRAIN_BASE_MOTOR);
     const ledDevice = await hub.waitForDeviceByType(PoweredUP.Consts.DeviceType.HUB_LED);
