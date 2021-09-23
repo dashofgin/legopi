@@ -56,7 +56,7 @@ function newMotorBtnHandler(motorDevice) {
             return;
         }
         console.log("Jade")
-        motor.setPower(50);
+        motorDevice.setPower(50);
     }
 }
 
