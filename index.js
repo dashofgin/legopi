@@ -66,6 +66,7 @@ function newSoundBtnHandler(soundDevice) {
             return;
         }
         if (!value) {
+            console.log("Off")
             return;
         }
         console.log("Trąbie")
