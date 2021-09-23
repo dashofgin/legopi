@@ -2,6 +2,8 @@ const SOUND_GPIO_PIN = 4;
 const MOTOR_GPIO_PIN = 1;
 const LED_GPIO_PIN = 17;
 
+const OUT_LED_GPIO_PIN = 27;
+
 const GPIO_INPUT_DIRECTION = 'in'
 const GPIO_EDGE_BOTH = 'both'
 const GPIO_EDGE_RISING = 'rising'
@@ -11,9 +13,13 @@ const PoweredUP = require("node-poweredup");
 var Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
 
 const motorBtn = newInputButton(MOTOR_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
-const soundBtn = newInputButton(SOUND_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
+const soundBtn = newInputButton(SOUND_GPIO_PIN, GPIO_EDGE_RISING, {debounceTimeout: 10});
 const ledBtn = newInputButton(LED_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
 const poweredUP = new PoweredUP.PoweredUP();
+
+
+const outLed = new Gpio(OUT_LED_GPIO_PIN, 'out');
+
 poweredUP.scan(); // Start scanning for hubs
 
 console.log("Szukam urządzeń lego...");
@@ -24,6 +30,15 @@ poweredUP.on("discover", async (hub) => { // Wait to discover hubs
     const devices = hub.getDevices();
     console.log(`Podłączony do ${hub.name}!`);
 
+    outLed.watch((err, val) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+
+        outLed.writeSync(outLed.readSync() ^ 1);
+    }
+
     const motorDevice = await hub.waitForDeviceByType(PoweredUP.Consts.DeviceType.DUPLO_TRAIN_BASE_MOTOR);
     const ledDevice = await hub.waitForDeviceByType(PoweredUP.Consts.DeviceType.HUB_LED);
     const soundDevice = await hub.waitForDeviceByType(PoweredUP.Consts.DeviceType.DUPLO_TRAIN_BASE_SPEAKER);
@@ -33,6 +48,7 @@ poweredUP.on("discover", async (hub) => { // Wait to discover hubs
     ledBtn.watch(newLedBtnHandler(ledDevice));
 });
 process.on('SIGINT', _ => {
+    outLed.unexport();
     ledBtn.unexport();
     motorBtn.unexport();
     soundBtn.unexport();
@@ -66,11 +82,14 @@ function newSoundBtnHandler(soundDevice) {
             return;
         }
         if (!value) {
-            console.log("Off")
+            console.log("Off");
             return;
         }
-        console.log("Trąbie")
+        console.log("Trąbie");
         soundDevice.playSound(PoweredUP.Consts.DuploTrainBaseSound.HORN);
+
+        console.log("Świecę");s
+        outLed.writeSync(outLed.readSync() ^ 1);
     }
 }
 

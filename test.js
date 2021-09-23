@@ -4,6 +4,9 @@
 const SOUND_GPIO_PIN = 1;
 const MOTOR_GPIO_PIN = 4;
 const LED_GPIO_PIN = 17;
+
+const OUT_LED_GPIO_PIN = 27;
+
 const BUTTON_GPIO_PIN_HORN = 27;
 const BUTTON_GPIO_PIN_LIGHT = 22;
 const BUTTON_GPIO_PIN_WATER = 10;
@@ -27,6 +30,8 @@ const motorBtn = newInputButton(MOTOR_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
 const soundBtn = newInputButton(SOUND_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
 const ledBtn = newInputButton(LED_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
 
+const outLed = new Gpio(OUT_LED_GPIO_PIN, 'out');
+
 const poweredUP = new PoweredUP.PoweredUP();
 poweredUP.scan(); // Start scanning for hubs
 
@@ -37,6 +42,15 @@ poweredUP.on("discover", async (hub) => { // Wait to discover hubs
     await hub.connect(); // Connect to hub
     const devices = hub.getDevices();
     console.log(`Podłączony do ${hub.name}!`);
+
+    outLed.watch((err, val) => {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+
+        outLed.writeSync(outLed.readSync() ^ 1);
+    }
 
     const motorDevice = await hub.waitForDeviceByType(PoweredUP.Consts.DeviceType.DUPLO_TRAIN_BASE_MOTOR);
     const ledDevice = await hub.waitForDeviceByType(PoweredUP.Consts.DeviceType.HUB_LED);
