@@ -13,7 +13,8 @@ const PoweredUP = require("node-poweredup");
 var Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
 
 const motorBtn = newInputButton(MOTOR_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
-const soundBtn = newInputButton(SOUND_GPIO_PIN, GPIO_EDGE_RISING, {debounceTimeout: 10});
+// const soundBtn = newInputButton(SOUND_GPIO_PIN, GPIO_EDGE_RISING, {debounceTimeout: 10});
+const soundBtn = newInputButton(SOUND_GPIO_PIN, GPIO_EDGE_BOTH, {activeLow: true, debounceTimeout: 10});
 const ledBtn = newInputButton(LED_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
 const poweredUP = new PoweredUP.PoweredUP();
 
@@ -88,7 +89,7 @@ function newSoundBtnHandler(soundDevice) {
         console.log("Trąbie");
         soundDevice.playSound(PoweredUP.Consts.DuploTrainBaseSound.HORN);
 
-        console.log("Świecę");s
+        console.log("Świecę");
         outLed.writeSync(outLed.readSync() ^ 1);
     }
 }
