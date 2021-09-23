@@ -1,5 +1,5 @@
-const SOUND_GPIO_PIN = 1;
-const MOTOR_GPIO_PIN = 4;
+const SOUND_GPIO_PIN = 4;
+const MOTOR_GPIO_PIN = 1;
 const LED_GPIO_PIN = 17;
 
 const GPIO_INPUT_DIRECTION = 'in'
@@ -13,7 +13,6 @@ var Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
 const motorBtn = newInputButton(MOTOR_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
 const soundBtn = newInputButton(SOUND_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
 const ledBtn = newInputButton(LED_GPIO_PIN, GPIO_EDGE_BOTH, GPIO_OPTS);
-
 const poweredUP = new PoweredUP.PoweredUP();
 poweredUP.scan(); // Start scanning for hubs
 
